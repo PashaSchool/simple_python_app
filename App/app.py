@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, send_file, make_response
 # from bson import Regex
 from PIL import Image
 import io
+from io import StringIO
 import cv2
 import numpy as np
 
@@ -43,9 +44,17 @@ def get_image():
 @app.route("/upload", methods=["POST"])
 def upload_image():
     img_file = request.files['img']
+
+    # im = Image.open(StringIO(img_file.read()))
+    im = Image.open(io.BytesIO(img_file.read()))
+    print("IO {}".format(im.shape))
+
+    # io_img = io.BytesIO(img_file.read())
+    # print("There is io Image: {}".format(type(io_img)))
+
     content_type = img_file.content_type
     filename = img_file.filename
-    print(img_file)
+    # print(img_file)
 
     Database.save_to_mongo(img_file, content_type, filename)
 
