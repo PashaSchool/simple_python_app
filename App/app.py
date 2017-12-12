@@ -9,6 +9,8 @@ import io
 import cv2
 import numpy as np
 
+# from bitstring import BitArray
+
 app = Flask(__name__)
 
 @app.before_first_request 
@@ -25,33 +27,17 @@ def get_image():
     # images = Image.get_images()
 
     img = Database.get_images()
-    # print(type(img))
-    # print(img[0]["filename"])
 
-    image = Database.FS.get(img[0]["fields"])
-    # print(image.read())
-    # image = image.read()
-    lst = Database.FS.get_version(img[0]["filename"])
+    image = Database.FS.get(img[1]["fields"])
 
-
-    # print(lst)
-    # img = io.BytesIO(lst)
-    # print(str(lst))
-    # print(img.read())
-    # nparray = np.fromstring(lst.read(), np.uint8)
-    # img_np = cv2.imdecode(nparray, cv2.IMREAD_COLOR)
-
-    # image = cv2.imshow('yyy', img_np)
-    # print(type(image))
-    ## pas img 
-    # image.show()
-
-    # if len(images) > 0:
-    #     return index(images)
-    # print("The image is {}".format(image))
-    # print(img_np.shape)
-
-    return index(images=lst.read())
+    lst = Database.FS.get_version(img[1]["filename"])
+    lst = lst.read()
+    print(type(lst))
+    import codecs
+    base64_data = codecs.encode(lst, 'base64')
+    image = base64_data.decode('utf-8')
+    print(type(base64_data))
+    return index(images=image)
     
 
 @app.route("/upload", methods=["POST"])
