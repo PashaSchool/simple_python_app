@@ -6,7 +6,6 @@ class Database(object):
     DATABASE = None
     FS = None
 
-    @staticmethod
     def initialize():
         db = pymongo.MongoClient(Database.URI)
         Database.DATABASE = db['image_stagram']
@@ -27,8 +26,8 @@ class Database(object):
         return data
 
     @staticmethod
-    def save_to_mongo(img, content_type, filename):
+    def save_to_mongo(img, content_type, filename, PRED):
         filename = filename
         fields = Database.FS.put(img, content_type=content_type, filename=filename)
-        Database.DATABASE['images'].insert({"filename": str(filename), "fields": fields})
+        Database.DATABASE['images'].insert({"filename": str(filename), "fields": fields, "prediction" : str(PRED)})
          
