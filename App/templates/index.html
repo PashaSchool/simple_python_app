@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        img {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h3>That is success bro, trust me</h3> 
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="image">Select image</label>
+        <input type="file" name='img' id='image'>
+        <input type="submit" id='upload_img'>
+    </form>
+
+    <hr>
+    <form action="/get_all_images" mathod='get'> 
+        <label for="show_images">Show all images</label>
+        <input type="submit" id='show_images'>
+    </form>
+
+    <div>
+        <img src="data:image/png;base64,{{images}}" alt="">
+        <div>{{images}}</div>
+    </div>
+
+</body>
+</html>
