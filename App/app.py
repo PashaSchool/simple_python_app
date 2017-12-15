@@ -79,50 +79,48 @@ def index(images=[]):
 @app.route('/get_all_images')
 def get_image():
     img = Database.get_images()
-    
-    image = Database.FS.get(img[1]["fields"])
-    
-    base64_data = codecs.encode(lst, 'base64')
+    image = Database.FS.get(img[0]["fields"])
+
+    base64_data = codecs.encode(image.read(), 'base64')
     image = base64_data.decode('utf-8')
-    print(type(base64_data))
+
     return index(images=image)
     
 
 @app.route("/upload", methods=["POST"])
 def upload_image():
     img_file = request.files['img']
-    print("I GOT FINNALY THE IMG_FILES")
-    # io_image = Image.open(io.BytesIO(img_file.read()))
-
-
-    # file_contents = tf.image.decode_jpeg(img_file.read(), channels=3)
-    image = tf.image.decode_jpeg(img_file.read(), channels=3)
-    image = tf.image.resize_images(image,[ 32, 32])
-    
-    with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        tf.get_default_graph().as_graph_def()
-
-        image_value = sess.run([image])
-        reshaped_image = np.reshape(image_value[0], [1, 32, 32, 3]).astype(np.float32)
-
-        saver = tf.train.import_meta_graph(os.path.join(DIR,'model-ckpt-4900.meta'))
-        saver.restore(sess, os.path.join(DIR,"model-ckpt-4900"))
-        print("restored")
-
-        x = tf.get_collection('training_data_input')[0]
-        y_true = tf.get_collection('training_data_outpuy')[0]
-        y_predicted = tf.get_collection('prediction')[0]
-        keep_prob =  tf.get_collection('keep_prob')[0]
-        print("data is saved")
-
-        pred = sess.run(y_predicted, feed_dict={x: reshaped_image , keep_prob: 1.0})
-        print("THE PREDICTION IS LOOK LIKE THIS: {}".format(pred))
-
 
     content_type = img_file.content_type
     filename = img_file.filename
-    Database.save_to_mongo(img_file, content_type, filename, PRED=pred)
+    Database.save_to_mongo(img_file, content_type, filename)
+
+    # file_contents = tf.image.decode_jpeg(img_file.read(), channels=3)
+    # image = tf.image.decode_jpeg(img_file.read(), channels=3)
+    # image = tf.image.resize_images(image,[ 32, 32])
+    
+    # with tf.Session() as sess:
+    #     sess.run(tf.global_variables_initializer())
+    #     tf.get_default_graph().as_graph_def()
+
+    #     image_value = sess.run([image])
+    #     reshaped_image = np.reshape(image_value[0], [1, 32, 32, 3]).astype(np.float32)
+
+    #     saver = tf.train.import_meta_graph(os.path.join(DIR,'model-ckpt-4900.meta'))
+    #     saver.restore(sess, os.path.join(DIR,"model-ckpt-4900"))
+    #     print("restored")
+
+    #     x = tf.get_collection('training_data_input')[0]
+    #     y_true = tf.get_collection('training_data_outpuy')[0]
+    #     y_predicted = tf.get_collection('prediction')[0]
+    #     keep_prob =  tf.get_collection('keep_prob')[0]
+    #     print("data is saved")
+
+    #     pred = sess.run(y_predicted, feed_dict={x: reshaped_image , keep_prob: 1.0})
+    #     print("THE PREDICTION IS LOOK LIKE THIS: {}".format(pred))
+
+
+ 
     # After I save the image ir byte coding
    ## img = Database.get_images()
    ## image = Database.FS.get(img[1]["fields"])
