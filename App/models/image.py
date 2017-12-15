@@ -1,5 +1,4 @@
 from database.database import Database
-
 import uuid
 
 class Image(object):
@@ -8,13 +7,13 @@ class Image(object):
         self._id = uuid.uuid4().hex if _id is None else _id
     
     @staticmethod
-    def save_to_mongo(image):
-        # Database.fs_put(image)
-        pass
+    def save_to_mongo(image, content_type, filename):
+        Database.insert_image('images', image, content_type, filename)
+        
     
     @classmethod
     def get_images(cls):
-        images = Database.find_all('image')
+        images = Database.get_images('images')
         return [cls(**image) for image in images]
-        # return [1,2,3]
+
     

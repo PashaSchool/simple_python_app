@@ -1,15 +1,15 @@
 import pymongo
 from gridfs import GridFS
+from flask_pymongo import PyMongo
 
 class Database(object):
-    URI = "mongodb://localhost:27017"
     DATABASE = None
     FS = None
 
-    def initialize():
-        db = pymongo.MongoClient(Database.URI)
-        Database.DATABASE = db['gallery']
-        Database.FS = GridFS(Database.DATABASE)
+    def initialize(app):
+        mongo = PyMongo(app)
+        Database.DATABASE = mongo.db
+        Database.FS = GridFS(mongo.db)
 
 
     # @staticmethod
@@ -21,12 +21,12 @@ class Database(object):
     #     return Database.DATABASE[collection].find({})
 
     @classmethod
-    def get_images(cls):
-        data = Database.DATABASE['images'].find()
-        return data
+    def get_all(cls, collection):
+        data = Database.DATABASE[collection].find({})
+        return [d for d in data]
 
     @staticmethod
-    def save_to_mongo(img, content_type, filename):
-        fields = Database.FS.put(img, content_type=content_type, filename=filename)
-        # Database.DATABASE['images'].insert({"filename": str(filename), "fields": fields})
+    def insert_image(collection, img, content_type, filename):
+        fields_id = Database.FS.put(img, content_type=content_type, filename=filename)
+        Database.DATABASE[collection].insert({"filename": str(filename), "fields": fields_id})
          

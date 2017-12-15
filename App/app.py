@@ -5,23 +5,23 @@ import codecs
 
 
 # from bson import Regex
-from PIL import Image
-<<<<<<< HEAD
+
+
 # import io
 # import cv2
 # import numpy as np
 
 # _______________________________________________
-import tensorflow as tf
+# import tensorflow as tf
 from datetime import datetime
-=======
+
 import io
 from io import StringIO
 import cv2
->>>>>>> 19b8776326cfc74fce220575e8d9f659fc27ec13
+
 import numpy as np
 import os
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 DIR = 'convolution/saved_model/'
 
@@ -73,9 +73,12 @@ import io
 
 app = Flask(__name__)
 
+app.config['MONGO_DBNAME'] = 'gallery_instagram'
+app.config['MONGO_URI'] = 'mongodb://pavlo_kuzina:silverok911@ds141406.mlab.com:41406/gallery_instagram'
+
 @app.before_first_request 
 def initiliae_database():
-    Database.initialize()
+    Database.initialize(app)
 
 
 @app.route("/")
@@ -84,9 +87,9 @@ def index(images=[]):
 
 @app.route('/get_all_images')
 def get_image():
-    img = Database.get_images()
+    img = Database.get_all('images')
     image = Database.FS.get(img[0]["fields"])
-
+    
     base64_data = codecs.encode(image.read(), 'base64')
     image = base64_data.decode('utf-8')
 
@@ -97,13 +100,11 @@ def get_image():
 def upload_image():
     img_file = request.files['img']
 
-
     content_type = img_file.content_type
     filename = img_file.filename
+    Image.save_to_mongo(img_file, content_type, filename)
 
-
-
-    Database.save_to_mongo(img_file, content_type, filename)
+    # Database.save_to_mongo(img_file, content_type, filename)
 
     # file_contents = tf.image.decode_jpeg(img_file.read(), channels=3)
     # image = tf.image.decode_jpeg(img_file.read(), channels=3)
