@@ -1,4 +1,3 @@
-import pymongo
 from gridfs import GridFS
 from flask_pymongo import PyMongo
 
@@ -10,15 +9,6 @@ class Database(object):
         mongo = PyMongo(app)
         Database.DATABASE = mongo.db
         Database.FS = GridFS(mongo.db)
-
-
-    # @staticmethod
-    # def insert(collection, data):
-    #     Database.DATABASE[collection].insert(data)
-
-    # @staticmethod
-    # def find_all(collection):
-    #     return Database.DATABASE[collection].find({})
 
     @classmethod
     def get_all(cls, collection):
