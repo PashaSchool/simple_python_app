@@ -6,6 +6,7 @@ import codecs
 
 # from bson import Regex
 from PIL import Image
+<<<<<<< HEAD
 # import io
 # import cv2
 # import numpy as np
@@ -13,6 +14,11 @@ from PIL import Image
 # _______________________________________________
 import tensorflow as tf
 from datetime import datetime
+=======
+import io
+from io import StringIO
+import cv2
+>>>>>>> 19b8776326cfc74fce220575e8d9f659fc27ec13
 import numpy as np
 import os
 import matplotlib.pyplot as plt
@@ -91,8 +97,12 @@ def get_image():
 def upload_image():
     img_file = request.files['img']
 
+
     content_type = img_file.content_type
     filename = img_file.filename
+
+
+
     Database.save_to_mongo(img_file, content_type, filename)
 
     # file_contents = tf.image.decode_jpeg(img_file.read(), channels=3)
